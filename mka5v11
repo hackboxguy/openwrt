@@ -1,0 +1,39 @@
+#!/bin/sh -e
+
+# automatic build maker
+
+END=$1
+
+BASE="openwrt-"
+BASEO="openwrt-ar71xx-generic-tl-"
+BASEQ="openwrt-ar71xx-generic-"
+ENDO="-squashfs-factory"
+ENDU="-squashfs-sysupgrade"
+
+cp ./configfiles/.config_a5-v11 ./.config
+make dirclean
+./remove-ipv6
+./fix-config
+make V=s -j41
+
+# A5-V11
+
+MOD="a5-v11"
+EXTB=".bin"
+
+ORIG="openwrt-ramips-rt305x-a5-v11-squashfs-factory.bin"
+FIRM=$BASE$MOD$END"-factory"$EXTB
+ORIG2="openwrt-ramips-rt305x-a5-v11-squashfs-sysupgrade.bin"
+FIRM2=$BASE$MOD$END"-upgrade"$EXTB
+cp ./bin/ramips/$ORIG ./images/$FIRM
+cp ./bin/ramips/$ORIG2 ./images/$FIRM2
+cp ./configfiles/A5-V11/readme.txt ./images/readme.txt
+cd ./images
+zip $MOD$END.zip $FIRM $FIRM2 readme.txt
+rm -f $FIRM
+rm -f $FIRM2
+rm -f readme.txt
+cd ..
+
+./restore-ipv6
+make dirclean

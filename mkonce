@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# automatic build maker
+
+#build version
+
+DATE="2016-04-01"
+
+NAME="GoldenOrb_"
+CODE=$NAME$DATE
+rm -rf ./files
+mkdir -p ./files/etc
+echo 'CODENAME="'"$CODE"'"' > ./files/etc/codename
+TYP="-GO"
+END=$TYP$DATE
+
+# 
+./mka5v11 $END
